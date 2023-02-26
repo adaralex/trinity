@@ -1,0 +1,115 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Project {
+  # The ID of the project
+  idProject: ID!
+  # The name of the project
+  name: String!
+  # The users of the project, or an empty list if they have none
+  users: [UserRole!]!
+  analysis: [ScannerAnalysis!]
+  vulnerabilities: [Vulnerability!]
+  projectAssets: [ProjectAssets!]
+  credentials: [ProjectCredentials!]
+  params: [Parameters!]!
+}
+type Vulnerability {
+  idVuln: ID!
+  originalCvss: Float!
+  revisedCvss: Float!
+  analysisDate: String!
+  scannerId: ID!
+  cve: String!
+  cwe: String!
+  vex: String!
+  infos: String!
+  status: String!
+  origin: VulnOrigin!
+}
+type ProjectAssets {
+  details: String!
+  typeAsset: AssetType!
+}
+type ProjectCredentials {
+  label: String!
+  value: String!
+}
+type Scanner {
+  idScanner: ID!
+  name: String!
+  install: [String!]!
+  run: [String!]!
+  report: [String!]!
+  type: ScannerType!
+}
+type User {
+  idUser: ID!
+  name: String!
+}
+type UserRole {
+  name: String!
+  role: String!
+}
+type ScannerAnalysis {
+  idAnalysis: ID!
+  scanner: ID!
+  cron: String!
+  params: [ID!]
+  timeout: Int
+}
+type Parameters {
+  idParameter: ID!
+  name: String!
+  value: String!
+}
+enum AssetType {
+  URL
+  IP
+  DOCKER_IMAGE
+  GIT_REPO
+  LIBRARY
+  COTS
+}
+enum ScannerType {
+  URL
+  IP
+  DOCKER_IMAGE
+  GIT_REPO
+}enum VulnOrigin {
+  CICD
+  MANUAL
+  SCHEDULED
+}
+enum VulnLevel {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+  NONE
+  NOT_SCORED
+}
+
+type Query {
+  Project(id: ID!): Project!
+  Scanner(id: ID!): Scanner!
+  Scanners(id: ID): [Scanner]
+}
+
+input ProjectInput {
+  name: String!
+}
+input ScannerInput {
+  name: String!
+}
+input UserInput {
+  name: String!
+}
+
+type Mutation {
+  CreateProject(project: ProjectInput!): Project!
+  CreateScanner(scanner: ScannerInput!): Scanner!
+  CreateUser(user: UserInput!): User!
+}
